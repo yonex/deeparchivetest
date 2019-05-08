@@ -6,7 +6,7 @@ use Aws\S3\MultipartUploader;
 use Aws\S3\S3Client;
 
 if ($argc < 2) {
-    echo "Usage: AWS_ACCESS_KEY_ID=x AWS_SECRET_ACCESS_KEY=x {$argv[0]} filename\n";
+    echo "Usage: AWS_ACCESS_KEY_ID=x AWS_SECRET_ACCESS_KEY=x {$argv[0]} <bucketname> <filename>\n";
     exit(1);
 }
 
@@ -15,8 +15,8 @@ $s3Client = new S3Client([
     'version' => '2006-03-01'
 ]);
 
-$vault = 'yonexvault';
-$filename = $argv[1];
+$bucket = $argv[1];
+$filename = $argv[2];
 
 $source = fopen($filename, 'rb');
 
@@ -31,7 +31,7 @@ $uploader = new MultipartUploader(
         'before_upload' => function (\Aws\Command $command) {
             gc_collect_cycles();
         },
-        'bucket' => $vault,
+        'bucket' => $bucket,
         'key' => $filename,
     ]
 );
