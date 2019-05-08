@@ -22,6 +22,7 @@ $source = fopen($filename, 'rb');
 
 $uploader = new MultipartUploader(
     $s3Client,
+    $source,
     [
         'before_initiate' => function (\Aws\Command $command) {
             // $command is a CreateMultipartUpload operation
@@ -39,10 +40,11 @@ do {
     try {
         $result = $uploader->upload();
         if ($result["@metadata"]["statusCode"] == '200') {
-            print('<p>File successfully uploaded to ' . $result["ObjectURL"] . '.</p>');
+            echo 'File successfully uploaded to ' . $result["ObjectURL"] . PHP_EOL;
         }
         print($result);
     } catch (MultipartUploadException $e) {
+        echo 'E: ' . $e->getMessage() . PHP_EOL;
         rewind($source);
         $uploader = new MultipartUploader($s3Client, $source, [
             'state' => $e->getState(),
