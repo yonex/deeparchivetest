@@ -5,18 +5,18 @@ use Aws\Exception\MultipartUploadException;
 use Aws\S3\MultipartUploader;
 use Aws\S3\S3Client;
 
-if ($argc < 2) {
-    echo "Usage: AWS_ACCESS_KEY_ID=x AWS_SECRET_ACCESS_KEY=x {$argv[0]} <bucketname> <filename>\n";
+if ($argc < 4) {
+    echo "Usage: AWS_ACCESS_KEY_ID=x AWS_SECRET_ACCESS_KEY=x {$argv[0]} <region> <bucket> <file>\n";
     exit(1);
 }
 
 $s3Client = new S3Client([
-    'region' => 'ap-northeast-1',
+    'region' => $argv[1],
     'version' => '2006-03-01'
 ]);
 
-$bucket = $argv[1];
-$filename = $argv[2];
+$bucket = $argv[2];
+$filename = $argv[3];
 
 $source = fopen($filename, 'rb');
 
@@ -51,5 +51,3 @@ do {
         ]);
     }
 } while (!isset($result));
-
-var_dump($result);
